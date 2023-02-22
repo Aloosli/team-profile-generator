@@ -1,3 +1,4 @@
+
 const Manager = require("./lib/Manager");
 const Engineer = require("./lib/Engineer");
 const Intern = require("./lib/Intern");
@@ -10,6 +11,49 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./src/page-template.js");
 
-
 // TODO: Write Code to gather information about the development team members, and render the HTML file.
 
+
+inquirer.prompt([
+    // Prompt for the common employee information
+    {
+      type: 'input',
+      name: 'name',
+      message: "What is the employee's name?",
+    },
+    {
+      type: 'input',
+      name: 'id',
+      message: "What is the employee's ID?",
+    },
+    {
+      type: 'input',
+      name: 'email',
+      message: "What is the employee's email address?",
+    },
+    // Prompt for the specific employee information based on the employee type
+    {
+      type: 'input',
+      name: 'github',
+      message: "What is the engineer's GitHub username?",
+      when: (answers) => answers.role === 'Engineer',
+    },
+    {
+      type: 'input',
+      name: 'school',
+      message: "What school does the intern attend?",
+      when: (answers) => answers.role === 'Intern',
+    },
+    {
+      type: 'input',
+      name: 'officeNumber',
+      message: "What is the manager's office number?",
+      when: (answers) => answers.role === 'Manager',
+    },
+  ]);
+  
+
+inquirer.prompt(employeeQuestions).then((answers) => {
+  console.log("Employee information:");
+  console.log(answers);
+});
