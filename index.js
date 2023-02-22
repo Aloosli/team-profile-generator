@@ -53,7 +53,21 @@ inquirer.prompt([
   ]);
   
 
-inquirer.prompt(employeeQuestions).then((answers) => {
-  console.log("Employee information:");
-  console.log(answers);
-});
+  const employeeQuestions = [
+    // ...
+  ];
+  
+  const employees = []; // array to hold the employee objects
+  
+  // Prompt for the common employee information
+  inquirer.prompt(employeeQuestions).then(({ name, id, email, role, github, school, officeNumber }) => {
+    if (role === "Engineer") {
+      employees.push(new Engineer(name, id, email, github));
+    } else if (role === "Intern") {
+      employees.push(new Intern(name, id, email, school));
+    } else if (role === "Manager") {
+      employees.push(new Manager(name, id, email, officeNumber));
+    }
+  });
+  
+  
