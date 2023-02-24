@@ -71,6 +71,10 @@ inquirer.prompt(employeeQuestions).then((answers) => {
 
   const renderedHTML = render(employees);
 
+  if (!fs.existsSync(OUTPUT_DIR)) {
+    fs.mkdirSync(OUTPUT_DIR);
+  }
+
   fs.writeFile(outputPath, renderedHTML, (err) => {
     if (err) throw err;
     console.log("Team profile page has been created successfully!");
