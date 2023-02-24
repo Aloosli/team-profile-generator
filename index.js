@@ -1,8 +1,3 @@
-"use strict";
-globalThis.regeneratorRuntime = require("regenerator-runtime");
-
-
-
 const Manager = require("./lib/Manager");
 const Engineer = require("./lib/Engineer");
 const Intern = require("./lib/Intern");
@@ -14,59 +9,119 @@ const render = require("./src/page-template.js");
 const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
-const employeeQuestions = [
-  {
-    type: "input",
-    name: "name",
-    message: "What is the employee's name?",
-  },
-  {
-    type: "input",
-    name: "id",
-    message: "What is the employee's ID number?",
-  },
-  {
-    type: "input",
-    name: "email",
-    message: "What is the employee's email address?",
-  },
-  {
-    type: "list",
-    name: "role",
-    message: "What is the employee's role?",
-    choices: ["Engineer", "Intern", "Manager"],
-  },
-  {
-    type: "input",
-    name: "github",
-    message: "What is the engineer's GitHub username?",
-    when: (answers) => answers.role === "Engineer",
-  },
-  {
-    type: "input",
-    name: "school",
-    message: "What school does the intern attend?",
-    when: (answers) => answers.role === "Intern",
-  },
-  {
-    type: "input",
-    name: "officeNumber",
-    message: "What is the manager's office number?",
-    when: (answers) => answers.role === "Manager",
-  },
-];
+async function init() {
+  let employees = [];
+  let managerInfo = await inquirer.prompt([
+    {
+      type: "input",
+      name: "name",
+      message: "What is the team manager's name?",
+    },
+    {
+      type: "input",
+      name: "id",
+      message: "What is the team manager's ID number?",
+    },
+    {
+      type: "input",
+      name: "email",
+      message: "What is the team manager's email address?",
+    },
+    {
+      type: "input",
+      name: "officeNumber",
+      message: "What is the team manager's office number?",
+    },
+  ]);
 
-const employees = [];
+  let manager = new Manager(
+    managerInfo.name,
+    managerInfo.id,
+    managerInfo.email,
+    managerInfo.officeNumber
+  );
 
-inquirer.prompt(employeeQuestions).then((answers) => {
-  const { name, id, email, role, github, school, officeNumber } = answers;
+  employees.push(manager);
 
-  if (role === "Engineer") {
-    employees.push(new Engineer(name, id, email, github));
-  } else if (role === "Intern") {
-    employees.push(new Intern(name, id, email, school));
-  } else if (role === "Manager") {
-    employees.push(new Manager(name, id, email, officeNumber));
+  let addAnotherEmployee = true;
+
+  while (addAnotherEmployee) {
+    let employeeType = await inquirer.prompt({
+      type: "list",
+      name: "role",
+      message: "What type of team member would you like to add?",
+      choices: ["Engineer", "Intern", "I don't want to add any more team members"],
+    });
+
+    switch (employeeType.role) {
+      case "Engineer":
+        let engineerInfo = await inquirer.prompt([
+          {
+            type: "input",
+            name: "name",
+            message: "What is the engineer's name?",
+          },
+          {
+            type: "input",
+            name: "id",
+            message: "What is the engineer's ID number?",
+          },
+          {
+            type: "input",
+            name: "email",
+            message: "What is the engineer's email address?",
+          },
+          {
+            type: "input",
+            name: "github",
+            message: "What is the engineer's GitHub username?",
+          },
+        ]);
+        employees.push(
+          new Engineer(
+            engineerInfo.name,
+            engineerInfo.id,
+            engineerInfo.email,
+            engineerInfo.github
+          )
+        );
+        break;
+      case "Intern":
+        let internInfo = await inquirer.prompt([
+          {
+            type: "input",
+            name: "name",
+            message: "What is the intern's name?",
+          },
+          {
+            type: "input",
+            name: "id",
+            message: "What is the intern's ID number?",
+          },
+          {
+            type: "input",
+            name: "email",
+            message: "What is the intern's email address?",
+          },
+          {
+            type: "input",
+            name: "school",
+            message: "What is the intern's school?",
+          },
+        ]);
+        employees.push(
+          new Intern(
+            internInfo.name,
+            internInfo.id,
+            internInfo.email,
+            internInfo.school
+          )
+        );
+        break;
+      default:
+        addAnotherEmployee = false;
+        break;
+    }
   }
 
   const renderedHTML = render(employees);
@@ -79,6 +134,6 @@ inquirer.prompt(employeeQuestions).then((answers) => {
     if (err) throw err;
     console.log("Team profile page has been created successfully!");
   });
-});
+}
 
-  
+init();
