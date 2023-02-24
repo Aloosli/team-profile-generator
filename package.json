@@ -1,0 +1,7 @@
+{
+  "type": "commonjs",
+  "dependencies": {
+    "inquirer": "^7.3.3",
+    "regenerator-runtime": "^0.13.11"
+  }
+}
