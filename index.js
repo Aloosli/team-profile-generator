@@ -13,7 +13,7 @@ const outputPath = join(OUTPUT_DIR, "team.html");
 
 async function init() {
   let employees = [];
-  const { name, id, email, officeNumber } = await inquirer.prompt([
+  const { name, id, email, officeNumber } = await prompt([
     {
       type: "input",
       name: "name",
@@ -35,10 +35,8 @@ async function init() {
       message: "What is the team manager's office number?",
     },
   ]);
-  
 
   const manager = new Manager(name, id, email, officeNumber);
-
 
   employees.push(manager);
 
@@ -49,12 +47,21 @@ async function init() {
       type: "list",
       name: "role",
       message: "What type of team member would you like to add?",
-      choices: ["Engineer", "Intern", "I don't want to add any more team members"],
+      choices: [
+        "Engineer",
+        "Intern",
+        "I don't want to add any more team members",
+      ],
     });
 
     switch (employeeType.role) {
       case "Engineer":
-        let engineerInfo = await prompt([
+        let {
+          name: engName,
+          id: engId,
+          email: engEmail,
+          github,
+        } = await prompt([
           {
             type: "input",
             name: "name",
@@ -76,17 +83,15 @@ async function init() {
             message: "What is the engineer's GitHub username?",
           },
         ]);
-        employees.push(
-          new Engineer(
-            engineerInfo.name,
-            engineerInfo.id,
-            engineerInfo.email,
-            engineerInfo.github
-          )
-        );
+        employees.push(new Engineer(engName, engId, engEmail, github));
         break;
       case "Intern":
-        let internInfo = await prompt([
+        const {
+          name: intName,
+          id: intId,
+          email: intEmail,
+          school,
+        } = await prompt([
           {
             type: "input",
             name: "name",
@@ -108,14 +113,8 @@ async function init() {
             message: "What is the intern's school?",
           },
         ]);
-        employees.push(
-          new Intern(
-            internInfo.name,
-            internInfo.id,
-            internInfo.email,
-            internInfo.school
-          )
-        );
+
+        employees.push(new Intern(intName, intId, intEmail, school));
         break;
       default:
         addAnotherEmployee = false;
