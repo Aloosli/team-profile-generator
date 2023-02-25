@@ -1,0 +1,34 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+body {
+  background:  #ffcdb2
+}
+.team-heading {
+  background-color: #b5838d;
+}
+
+h1 {
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  font-size: 4rem;
+  color: #ffcdb2;
+}
+h2 {
+  color: #ffb4a2;
+}
+.card-header {
+  background-color: #b5838d;
+  color: #ffcdb2;
+}
+.card, .list-group-item {
+  background: #ffb4a2;
+  margin: 1rem;
+}
+img {
+  margin-right: 1rem;
+}
+
+a, li {
+  font-size: 1.2rem;
+  color: #6d6875;
+}
