@@ -1,17 +1,19 @@
 const Manager = require("./lib/Manager");
 const Engineer = require("./lib/Engineer");
 const Intern = require("./lib/Intern");
-const inquirer = require("inquirer");
-const path = require("path");
-const fs = require("fs");
+const { prompt } = require("inquirer");
+
+const { resolve, join } = require("path");
+const { writeFile, existsSync } = require("fs");
+
 const render = require("./src/page-template.js");
 
-const OUTPUT_DIR = path.resolve(__dirname, "output");
-const outputPath = path.join(OUTPUT_DIR, "team.html");
+const OUTPUT_DIR = resolve(__dirname, "output");
+const outputPath = join(OUTPUT_DIR, "team.html");
 
 async function init() {
   let employees = [];
-  let managerInfo = await inquirer.prompt([
+  const { name, id, email, officeNumber } = await inquirer.prompt([
     {
       type: "input",
       name: "name",
@@ -33,20 +35,17 @@ async function init() {
       message: "What is the team manager's office number?",
     },
   ]);
+  
 
-  let manager = new Manager(
-    managerInfo.name,
-    managerInfo.id,
-    managerInfo.email,
-    managerInfo.officeNumber
-  );
+  const manager = new Manager(name, id, email, officeNumber);
+
 
   employees.push(manager);
 
   let addAnotherEmployee = true;
 
   while (addAnotherEmployee) {
-    let employeeType = await inquirer.prompt({
+    let employeeType = await prompt({
       type: "list",
       name: "role",
       message: "What type of team member would you like to add?",
@@ -55,7 +54,7 @@ async function init() {
 
     switch (employeeType.role) {
       case "Engineer":
-        let engineerInfo = await inquirer.prompt([
+        let engineerInfo = await prompt([
           {
             type: "input",
             name: "name",
@@ -87,7 +86,7 @@ async function init() {
         );
         break;
       case "Intern":
-        let internInfo = await inquirer.prompt([
+        let internInfo = await prompt([
           {
             type: "input",
             name: "name",
@@ -126,11 +125,11 @@ async function init() {
 
   const renderedHTML = render(employees);
 
-  if (!fs.existsSync(OUTPUT_DIR)) {
+  if (!existsSync(OUTPUT_DIR)) {
     fs.mkdirSync(OUTPUT_DIR);
   }
 
-  fs.writeFile(outputPath, renderedHTML, (err) => {
+  writeFile(outputPath, renderedHTML, (err) => {
     if (err) throw err;
     console.log("Team profile page has been created successfully!");
   });
