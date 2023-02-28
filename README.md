@@ -29,6 +29,5 @@ To run tests on the Team Profile Generator, follow these steps:
 
 Open a terminal window and navigate to the root of the project directory.
 Run the command npm run test to run the test suite.
-License
-This project is licensed under the MIT license.
+
 
